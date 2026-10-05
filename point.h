@@ -48,34 +48,6 @@ public:
     bool operator!=(const Point& other) const;
 
     /**
-     * @brief Оператор меньше
-     * @param other другая точка
-     * @return true, если текущая точка меньше other
-     */
-    bool operator<(const Point& other) const;
-
-    /**
-     * @brief Оператор меньше или равно
-     * @param other другая точка
-     * @return true, если текущая точка меньше или равна other
-     */
-    bool operator<=(const Point& other) const;
-
-    /**
-     * @brief Оператор больше
-     * @param other другая точка
-     * @return true, если текущая точка больше other
-     */
-    bool operator>(const Point& other) const;
-
-    /**
-     * @brief Оператор больше или равно
-     * @param other другая точка
-     * @return true, если текущая точка больше или равна other
-     */
-    bool operator>=(const Point& other) const;
-
-    /**
      * @brief Перегрузка оператора вывода в поток
      * @param os поток вывода
      * @param point точка
@@ -92,7 +64,7 @@ public:
     friend std::istream& operator>>(std::istream& is, Point& point);
 
 private:
-    double x; 
-    double y; 
-    double z; 
+    double x;
+    double y;
+    double z;
 };
