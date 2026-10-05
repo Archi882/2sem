@@ -8,7 +8,7 @@ Vector::Vector()
 {
 }
 
-Vector::Vector(std::initializer_list<int> values)
+Vector::Vector(const std::initializer_list<int> values)
     : data_(nullptr), size_(values.size()), capacity_(values.size())
 {
     if (capacity_ > 0)
@@ -24,7 +24,7 @@ Vector::Vector(std::initializer_list<int> values)
 }
 
 Vector::Vector(const Vector& other)
-    : data_(nullptr), size_(other.size_), capacity_(other.size_)
+    : data_(nullptr), size_(other.size_), capacity_(other.capacity_)
 {
     if (capacity_ > 0)
     {
@@ -55,9 +55,9 @@ Vector& Vector::operator=(const Vector& other)
     {
         int* newData = nullptr;
 
-        if (other.size_ > 0)
+        if (other.capacity_ > 0)
         {
-            newData = new int[other.size_];
+            newData = new int[other.capacity_];
             for (size_type i = 0; i < other.size_; ++i)
             {
                 newData[i] = other.data_[i];
@@ -67,7 +67,7 @@ Vector& Vector::operator=(const Vector& other)
         delete[] data_;
         data_ = newData;
         size_ = other.size_;
-        capacity_ = other.size_;
+        capacity_ = other.capacity_;
     }
 
     return *this;
@@ -91,7 +91,7 @@ Vector& Vector::operator=(Vector&& other) noexcept
     return *this;
 }
 
-int& Vector::operator[](size_type index)
+int& Vector::operator[](const size_type index)
 {
     if (index >= size_)
     {
@@ -101,7 +101,7 @@ int& Vector::operator[](size_type index)
     return data_[index];
 }
 
-const int& Vector::operator[](size_type index) const
+const int& Vector::operator[](const size_type index) const
 {
     if (index >= size_)
     {
@@ -111,7 +111,7 @@ const int& Vector::operator[](size_type index) const
     return data_[index];
 }
 
-Vector& Vector::operator<<(size_type count)
+Vector& Vector::operator<<(const size_type count)
 {
     if (size_ == 0 || count == 0)
     {
@@ -140,7 +140,7 @@ Vector& Vector::operator<<(size_type count)
     return *this;
 }
 
-Vector& Vector::operator>>(size_type count)
+Vector& Vector::operator>>(const size_type count)
 {
     if (size_ == 0 || count == 0)
     {
@@ -169,12 +169,12 @@ Vector& Vector::operator>>(size_type count)
     return *this;
 }
 
-void Vector::Insert(int value)
+void Vector::Insert(const int value)
 {
     Insert(value, size_);
 }
 
-void Vector::Insert(int value, size_type index)
+void Vector::Insert(const int value, const size_type index)
 {
     if (index > size_)
     {
@@ -195,7 +195,7 @@ void Vector::Insert(int value, size_type index)
     ++size_;
 }
 
-void Vector::RemoveAt(size_type index)
+void Vector::RemoveAt(const size_type index)
 {
     if (index >= size_)
     {
@@ -217,7 +217,7 @@ void Vector::RemoveAt(size_type index)
     }
 }
 
-Vector::size_type Vector::Find(int value) const noexcept
+Vector::size_type Vector::Find(const int value) const noexcept
 {
     for (size_type i = 0; i < size_; ++i)
     {
