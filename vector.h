@@ -22,7 +22,7 @@ public:
      * @brief Конструктор со списком инициализации.
      * @param values Начальные значения.
      */
-    Vector(std::initializer_list<int> values);
+    Vector(const std::initializer_list<int> values);
 
     /**
      * @brief Конструктор копирования.
@@ -60,54 +60,54 @@ public:
      * @param index Индекс элемента.
      * @return Ссылка на элемент.
      */
-    int& operator[](size_type index);
+    int& operator[](const size_type index);
 
     /**
      * @brief Доступ к элементу по индексу.
      * @param index Индекс элемента.
      * @return Константная ссылка на элемент.
      */
-    const int& operator[](size_type index) const;
+    const int& operator[](const size_type index) const;
 
     /**
      * @brief Сдвиг коллекции влево.
      * @param count Количество позиций.
      * @return Ссылка на текущий объект.
      */
-    Vector& operator<<(size_type count);
+    Vector& operator<<(const size_type count);
 
     /**
      * @brief Сдвиг коллекции вправо.
      * @param count Количество позиций.
      * @return Ссылка на текущий объект.
      */
-    Vector& operator>>(size_type count);
+    Vector& operator>>(const size_type count);
 
     /**
      * @brief Добавить элемент в конец.
      * @param value Значение.
      */
-    void Insert(int value);
+    void Insert(const int value);
 
     /**
      * @brief Вставить элемент по индексу.
      * @param value Значение.
      * @param index Индекс вставки.
      */
-    void Insert(int value, size_type index);
+    void Insert(const int value, const size_type index);
 
     /**
      * @brief Удалить элемент по индексу.
      * @param index Индекс.
      */
-    void RemoveAt(size_type index);
+    void RemoveAt(const size_type index);
 
     /**
      * @brief Найти элемент.
      * @param value Значение для поиска.
      * @return Индекс или npos.
      */
-    size_type Find(int value) const noexcept;
+    size_type Find(const int value) const noexcept;
 
     /**
      * @brief Проверка на пустоту.
