@@ -33,34 +33,6 @@ bool Point::operator!=(const Point& other) const
     return !(*this == other);
 }
 
-bool Point::operator<(const Point& other) const
-{
-    if (x != other.x)
-    {
-        return x < other.x;
-    }
-    if (y != other.y)
-    {
-        return y < other.y;
-    }
-    return z < other.z;
-}
-
-bool Point::operator<=(const Point& other) const
-{
-    return (*this < other || *this == other);
-}
-
-bool Point::operator>(const Point& other) const
-{
-    return !(*this <= other);
-}
-
-bool Point::operator>=(const Point& other) const
-{
-    return !(*this < other);
-}
-
 std::ostream& operator<<(std::ostream& os, const Point& point)
 {
     os << point.x << " " << point.y << " " << point.z;
