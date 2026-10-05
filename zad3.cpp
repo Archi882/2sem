@@ -1,10 +1,27 @@
 ﻿#include <iostream>
 #include <limits>
 #include <stdexcept>
+#include <string>
 
 #include "vector.h"
 
 using namespace std;
+
+/**
+ * @brief Пункты меню.
+ */
+enum MenuOption
+{
+    Exit       = 0,
+    Show       = 1,
+    Append     = 2,
+    InsertAt   = 3,
+    RemoveAt   = 4,
+    FindItem   = 5,
+    ShiftLeft  = 6,
+    ShiftRight = 7,
+    At         = 8
+};
 
 /**
  * @brief Считать целое число с клавиатуры.
@@ -15,20 +32,18 @@ int ReadInt(const string& prompt)
 {
     int value = 0;
 
-    while (true)
+    cout << prompt;
+    cin >> value;
+
+    while (cin.fail())
     {
-        cout << prompt;
-        cin >> value;
-
-        if (!cin.fail())
-        {
-            return value;
-        }
-
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout << "Ошибка ввода. Повторите.\n";
+        cout << "Ошибка ввода. Повторите: ";
+        cin >> value;
     }
+
+    return value;
 }
 
 /**
@@ -54,15 +69,15 @@ Vector::size_type ReadIndex(const string& prompt)
 void ShowMenu()
 {
     cout << "\nМеню:\n";
-    cout << "1 - показать коллекцию\n";
-    cout << "2 - добавить элемент в конец\n";
-    cout << "3 - вставить элемент по индексу\n";
-    cout << "4 - удалить элемент по индексу\n";
-    cout << "5 - найти элемент\n";
-    cout << "6 - сдвиг влево\n";
-    cout << "7 - сдвиг вправо\n";
-    cout << "8 - вывести элемент по индексу\n";
-    cout << "0 - выход\n";
+    cout << static_cast<int>(Show)       << " - показать коллекцию\n";
+    cout << static_cast<int>(Append)     << " - добавить элемент в конец\n";
+    cout << static_cast<int>(InsertAt)   << " - вставить элемент по индексу\n";
+    cout << static_cast<int>(RemoveAt)   << " - удалить элемент по индексу\n";
+    cout << static_cast<int>(FindItem)   << " - найти элемент\n";
+    cout << static_cast<int>(ShiftLeft)  << " - сдвиг влево\n";
+    cout << static_cast<int>(ShiftRight) << " - сдвиг вправо\n";
+    cout << static_cast<int>(At)         << " - вывести элемент по индексу\n";
+    cout << static_cast<int>(Exit)       << " - выход\n";
 }
 
 /**
@@ -71,21 +86,17 @@ void ShowMenu()
  */
 int main()
 {
-    cout << "Введите количество элементов: ";
-    int n = 0;
-    cin >> n;
+    int n = ReadInt("Введите количество элементов: ");
 
-    while (cin.fail() || n < 0)
+    while (n < 0)
     {
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout << "Ошибка. Введите корректное число: ";
-        cin >> n;
+        cout << "Ошибка. Количество элементов не может быть отрицательным.\n";
+        n = ReadInt("Введите количество элементов: ");
     }
 
     Vector v;
 
-    for (int i = 0; i < n; ++i)
+    for (size_t i = 0; i < static_cast<size_t>(n); ++i)
     {
         int value = ReadInt("Элемент [" + to_string(i) + "]: ");
         v.Insert(value);
@@ -93,7 +104,8 @@ int main()
 
     cout << "\nНачальная коллекция: " << v.ToString() << endl;
 
-    while (true)
+    bool running = true;
+    while (running)
     {
         ShowMenu();
         int choice = ReadInt("Ваш выбор: ");
@@ -102,12 +114,12 @@ int main()
         {
             switch (choice)
             {
-            case 1:
+            case Show:
                 cout << "Коллекция: " << v.ToString() << endl;
                 cout << "Пустая: " << (v.Empty() ? "да" : "нет") << endl;
                 break;
 
-            case 2:
+            case Append:
             {
                 int value = ReadInt("Введите значение: ");
                 v.Insert(value);
@@ -115,7 +127,7 @@ int main()
                 break;
             }
 
-            case 3:
+            case InsertAt:
             {
                 int value = ReadInt("Введите значение: ");
                 auto index = ReadIndex("Введите индекс: ");
@@ -124,7 +136,7 @@ int main()
                 break;
             }
 
-            case 4:
+            case RemoveAt:
             {
                 auto index = ReadIndex("Введите индекс: ");
                 v.RemoveAt(index);
@@ -132,7 +144,7 @@ int main()
                 break;
             }
 
-            case 5:
+            case FindItem:
             {
                 int value = ReadInt("Введите искомое значение: ");
                 auto pos = v.Find(value);
@@ -149,7 +161,7 @@ int main()
                 break;
             }
 
-            case 6:
+            case ShiftLeft:
             {
                 auto count = ReadIndex("Введите количество позиций: ");
                 v << count;
@@ -157,7 +169,7 @@ int main()
                 break;
             }
 
-            case 7:
+            case ShiftRight:
             {
                 auto count = ReadIndex("Введите количество позиций: ");
                 v >> count;
@@ -165,20 +177,21 @@ int main()
                 break;
             }
 
-            case 8:
+            case At:
             {
                 auto index = ReadIndex("Введите индекс: ");
                 cout << "Элемент: " << v[index] << endl;
                 break;
             }
 
-            case 0:
+            case Exit:
                 cout << "Выход.\n";
-                return 0;
+                running = false;
+                break;
 
             default:
-                cout << "Неизвестная команда.\n";
-                break;
+                cout << "Неизвестная команда. Выход.\n";
+                return 0;
             }
         }
         catch (const exception& ex)
@@ -186,4 +199,6 @@ int main()
             cout << "Ошибка: " << ex.what() << endl;
         }
     }
+
+    return 0;
 }
