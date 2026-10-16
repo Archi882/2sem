@@ -47,5 +47,10 @@ double getRadius(const string report) {
         exit(1);
     }
 
+    if (radius <= 0) {
+    cout << "Error: radius must be positive\n";
+    exit(1);
+    }
+    
     return radius;
 }
