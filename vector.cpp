@@ -2,19 +2,19 @@
 
 #include <sstream>
 #include <stdexcept>
+#include <utility> 
 
 Vector::Vector()
-    : data_(nullptr), size_(0), capacity_(0)
+    : data_(nullptr), size_(0)
 {
 }
 
 Vector::Vector(const std::initializer_list<int> values)
-    : data_(nullptr), size_(values.size()), capacity_(values.size())
+    : data_(nullptr), size_(values.size())
 {
-    if (capacity_ > 0)
+    if (size_ > 0)
     {
-        data_ = new int[capacity_];
-
+        data_ = new int[size_];
         size_type index = 0;
         for (int value : values)
         {
@@ -24,11 +24,11 @@ Vector::Vector(const std::initializer_list<int> values)
 }
 
 Vector::Vector(const Vector& other)
-    : data_(nullptr), size_(other.size_), capacity_(other.capacity_)
+    : data_(nullptr), size_(other.size_)
 {
-    if (capacity_ > 0)
+    if (size_ > 0)
     {
-        data_ = new int[capacity_];
+        data_ = new int[size_];
         for (size_type i = 0; i < size_; ++i)
         {
             data_[i] = other.data_[i];
@@ -37,11 +37,10 @@ Vector::Vector(const Vector& other)
 }
 
 Vector::Vector(Vector&& other) noexcept
-    : data_(other.data_), size_(other.size_), capacity_(other.capacity_)
+    : data_(other.data_), size_(other.size_)
 {
     other.data_ = nullptr;
     other.size_ = 0;
-    other.capacity_ = 0;
 }
 
 Vector::~Vector()
@@ -55,9 +54,9 @@ Vector& Vector::operator=(const Vector& other)
     {
         int* newData = nullptr;
 
-        if (other.capacity_ > 0)
+        if (other.size_ > 0)
         {
-            newData = new int[other.capacity_];
+            newData = new int[other.size_];
             for (size_type i = 0; i < other.size_; ++i)
             {
                 newData[i] = other.data_[i];
@@ -67,7 +66,6 @@ Vector& Vector::operator=(const Vector& other)
         delete[] data_;
         data_ = newData;
         size_ = other.size_;
-        capacity_ = other.capacity_;
     }
 
     return *this;
@@ -81,11 +79,9 @@ Vector& Vector::operator=(Vector&& other) noexcept
 
         data_ = other.data_;
         size_ = other.size_;
-        capacity_ = other.capacity_;
 
         other.data_ = nullptr;
         other.size_ = 0;
-        other.capacity_ = 0;
     }
 
     return *this;
@@ -113,17 +109,11 @@ const int& Vector::operator[](const size_type index) const
 
 Vector& Vector::operator<<(const size_type count)
 {
-    if (size_ == 0 || count == 0)
-    {
-        return *this;
-    }
+    if (size_ == 0 || count == 0) return *this;
 
     if (count >= size_)
     {
-        for (size_type i = 0; i < size_; ++i)
-        {
-            data_[i] = 0;
-        }
+        for (size_type i = 0; i < size_; ++i) data_[i] = 0;
         return *this;
     }
 
@@ -142,17 +132,11 @@ Vector& Vector::operator<<(const size_type count)
 
 Vector& Vector::operator>>(const size_type count)
 {
-    if (size_ == 0 || count == 0)
-    {
-        return *this;
-    }
+    if (size_ == 0 || count == 0) return *this;
 
     if (count >= size_)
     {
-        for (size_type i = 0; i < size_; ++i)
-        {
-            data_[i] = 0;
-        }
+        for (size_type i = 0; i < size_; ++i) data_[i] = 0;
         return *this;
     }
 
@@ -181,17 +165,22 @@ void Vector::Insert(const int value, const size_type index)
         throw std::out_of_range("Vector: insert index out of range");
     }
 
-    if (size_ == capacity_)
+    int* newData = new int[size_ + 1];
+
+    for (size_type i = 0; i < index; ++i)
     {
-        Reserve(capacity_ == 0 ? 1 : capacity_ * 2);
+        newData[i] = data_[i];
     }
 
-    for (size_type i = size_; i > index; --i)
+    newData[index] = value;
+
+    for (size_type i = index; i < size_; ++i)
     {
-        data_[i] = data_[i - 1];
+        newData[i + 1] = data_[i];
     }
 
-    data_[index] = value;
+    delete[] data_;
+    data_ = newData;
     ++size_;
 }
 
@@ -202,19 +191,29 @@ void Vector::RemoveAt(const size_type index)
         throw std::out_of_range("Vector: remove index out of range");
     }
 
-    for (size_type i = index; i + 1 < size_; ++i)
-    {
-        data_[i] = data_[i + 1];
-    }
-
-    --size_;
-
-    if (size_ == 0)
+    if (size_ == 1)
     {
         delete[] data_;
         data_ = nullptr;
-        capacity_ = 0;
+        size_ = 0;
+        return;
     }
+
+    int* newData = new int[size_ - 1];
+
+    for (size_type i = 0; i < index; ++i)
+    {
+        newData[i] = data_[i];
+    }
+
+    for (size_type i = index + 1; i < size_; ++i)
+    {
+        newData[i - 1] = data_[i];
+    }
+
+    delete[] data_;
+    data_ = newData;
+    --size_;
 }
 
 Vector::size_type Vector::Find(const int value) const noexcept
@@ -257,23 +256,4 @@ std::string Vector::ToString() const
     out << ']';
 
     return out.str();
-}
-
-void Vector::Reserve(size_type newCapacity)
-{
-    if (newCapacity <= capacity_)
-    {
-        return;
-    }
-
-    int* newData = new int[newCapacity];
-
-    for (size_type i = 0; i < size_; ++i)
-    {
-        newData[i] = data_[i];
-    }
-
-    delete[] data_;
-    data_ = newData;
-    capacity_ = newCapacity;
 }
