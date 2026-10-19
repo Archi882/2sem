@@ -10,14 +10,12 @@ using namespace std;
 * @param report - строка информации
 * @return считанное значение
 */
-
 double getValue(const string& report = "");
 
 /*
 * @brief Считывает координаты точки
 * @return точка
 */
-
 Point getPoint();
 
 /**
