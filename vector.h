@@ -128,9 +128,6 @@ public:
     std::string ToString() const;
 
 private:
-    int* data_;
-    size_type size_;
-    size_type capacity_;
-
-    void Reserve(size_type newCapacity);
+    int* data_;        
+    size_type size_;   
 };
