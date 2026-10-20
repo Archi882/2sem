@@ -2,6 +2,7 @@
 #include "sphere.h"
 #include <cmath>
 #include <stdexcept>
+#include <string>
 
 using namespace std;
 
@@ -25,12 +26,12 @@ double Sphere::GetRadius() const
 
 double Sphere::SurfaceArea() const
 {
-    return 4.0 * M_PI * pow(radius,2);
+    return 4.0 * M_PI * pow(radius, 2);
 }
 
 double Sphere::Volume() const
 {
-    return (4.0 / 3.0) * M_PI * pow(radius,3);
+    return (4.0 / 3.0) * M_PI * pow(radius, 3);
 }
 
 string Sphere::ToString() const
